@@ -1,5 +1,5 @@
 import "./Header.css";
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import logo from "../assets/logo.png";
 
 type HeaderProps = {
@@ -8,22 +8,40 @@ type HeaderProps = {
 };
 export default function Header({ language, setLanguage }: HeaderProps) {
   const location = useLocation();
+  const navigate = useNavigate();
   const isPresentationPage = location.pathname.startsWith("/apresentacao/");
+
+  const scrollToSection = (id: "thinking-tech" | "projects") => {
+    const target = document.getElementById(id);
+
+    if (target) {
+      target.scrollIntoView({ behavior: "smooth", block: "start" });
+    }
+  };
+
+  const handleNavClick = (
+    event: React.MouseEvent<HTMLAnchorElement>,
+    id: "thinking-tech" | "projects",
+  ) => {
+    event.preventDefault();
+
+    if (location.pathname !== "/") {
+      navigate("/");
+      window.setTimeout(() => scrollToSection(id), 220);
+      return;
+    }
+
+    scrollToSection(id);
+  };
 
   const text = {
     pt: {
-      stack: "Stack",
+      thinking: "O que penso sobre tecnologia",
       projects: "Projetos",
-      tools: "Ferramentas",
-      about: "Sobre",
-      contact: "Contato",
     },
     en: {
-      stack: "Stack",
+      thinking: "How I think about technology",
       projects: "Projects",
-      tools: "Tools",
-      about: "About",
-      contact: "Contact",
     },
   };
 
@@ -39,11 +57,8 @@ export default function Header({ language, setLanguage }: HeaderProps) {
       </Link>
 
       <nav>
-        <a href="#">{text[language].stack}</a>
-        <a href="#">{text[language].projects}</a>
-        <a href="#">{text[language].tools}</a>
-        <a href="#">{text[language].about}</a>
-        <a href="#">{text[language].contact}</a>
+        <a href="#thinking-tech" onClick={(event) => handleNavClick(event, "thinking-tech")}>{text[language].thinking}</a>
+        <a href="#projects" onClick={(event) => handleNavClick(event, "projects")}>{text[language].projects}</a>
       </nav>
 
       <div className="actions">

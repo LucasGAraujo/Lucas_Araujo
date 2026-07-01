@@ -59,10 +59,9 @@ nav {
 
 nav a {
   text-decoration: none;
-  text-transform: uppercase;
   color: #444;
-  font-size: 12px;
-  letter-spacing: 3px;
+  font-size: 13px;
+  letter-spacing: 0.4px;
   font-weight: 500;
   transition: color 0.25s;
 }

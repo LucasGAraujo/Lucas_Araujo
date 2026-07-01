@@ -98,7 +98,7 @@ export default function LensesSection({ language }: Props) {
       : lenses.filter((lens) => lens.tags.includes(filter));
 
   return (
-    <section className="lenses">
+    <section className="lenses" id="thinking-tech">
       <div className="lenses-header">
         <h2 aria-label={text[language].title}>{text[language].title}</h2>
         <p>
