@@ -1,0 +1,17 @@
+.presentation {
+  width: 80%;
+  margin: 100px auto;
+  color: #111;
+  font-family: Inter, sans-serif;
+}
+
+.presentation h1 {
+  font-size: 42px;
+  margin-bottom: 20px;
+}
+
+.presentation p {
+  font-size: 16px;
+  line-height: 1.7;
+  color: #444;
+}

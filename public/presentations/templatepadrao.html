@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Template de Apresentacao</title>
+
+<style>
+  :root {
+    --bg: #f7f7f7;
+    --surface: #ffffff;
+    --text: #111111;
+    --muted: #666666;
+    --line: #e6e6e6;
+    --accent-ai: #7c3aed;
+    --accent-engineering: #3b82f6;
+    --accent-performance: #f59e0b;
+    --accent-security: #ef4444;
+  }
+
+  * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
+
+  html,
+  body {
+    width: 100%;
+    height: 100%;
+  }
+
+  body {
+    overflow: hidden;
+    font-family: Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    background:
+      radial-gradient(circle at 92% 12%, rgba(124, 58, 237, 0.08), transparent 32%),
+      radial-gradient(circle at 8% 80%, rgba(59, 130, 246, 0.08), transparent 30%),
+      var(--bg);
+    color: var(--text);
+  }
+
+  .slide-wrapper {
+    position: relative;
+    width: 100%;
+    height: 100dvh;
+    padding: clamp(28px, 4vw, 56px);
+  }
+
+  .slide-frame {
+    width: 100%;
+    height: 100%;
+    border: 1px solid var(--line);
+    border-radius: 20px;
+    background: var(--surface);
+    box-shadow: 0 10px 35px rgba(17, 17, 17, 0.08);
+    padding: clamp(24px, 4vw, 48px);
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+  }
+
+  .slide-container {
+    display: none;
+    animation: fadeIn 0.35s ease;
+    max-width: 980px;
+  }
+
+  .slide-container.active {
+    display: block;
+  }
+
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+      transform: translateY(10px);
+    }
+
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  .eyebrow {
+    margin-bottom: 16px;
+    font-size: 12px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+
+  h1 {
+    font-size: clamp(30px, 4.5vw, 54px);
+    line-height: 1.08;
+    letter-spacing: -1.2px;
+    margin-bottom: 20px;
+  }
+
+  p {
+    max-width: 74ch;
+    font-size: clamp(16px, 1.8vw, 20px);
+    line-height: 1.65;
+    color: #3f3f46;
+    margin-bottom: 26px;
+  }
+
+  .accent-bar {
+    width: 130px;
+    height: 4px;
+    border-radius: 999px;
+    background: linear-gradient(
+      90deg,
+      var(--accent-ai),
+      var(--accent-engineering),
+      var(--accent-performance),
+      var(--accent-security)
+    );
+  }
+
+  .footer-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 16px;
+    margin-top: 14px;
+  }
+
+  .counter {
+    color: var(--muted);
+    font-size: 12px;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+  }
+
+  .controls {
+    display: flex;
+    gap: 10px;
+  }
+
+  .controls button {
+    border-radius: 8px;
+    font-size: 12px;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    padding: 10px 14px;
+    cursor: pointer;
+    border: 1px solid var(--text);
+    transition: transform 0.2s ease, opacity 0.2s ease;
+  }
+
+  .controls button.primary {
+    background: var(--text);
+    color: #fff;
+  }
+
+  .controls button.outline {
+    background: #fff;
+    color: var(--text);
+    border-color: var(--line);
+  }
+
+  .controls button:hover:not(:disabled) {
+    transform: translateY(-1px);
+  }
+
+  .controls button:disabled {
+    opacity: 0.35;
+    cursor: not-allowed;
+  }
+
+  @media (max-width: 860px) {
+    .slide-wrapper {
+      padding: 12px;
+    }
+
+    .slide-frame {
+      border-radius: 12px;
+      padding: 18px;
+    }
+
+    .footer-row {
+      flex-direction: column;
+      align-items: flex-start;
+    }
+  }
+</style>
+</head>
+
+<body>
+<main class="slide-wrapper">
+  <section class="slide-frame">
+    <article id="slide-1" class="slide-container active">
+      <div class="eyebrow">Lens / Tema · 1 de 3</div>
+      <h1>Titulo principal do slide</h1>
+      <p>
+        Resumo claro e direto sobre a ideia central desta parte da apresentacao.
+        Mantenha o texto em ate 4 linhas para facilitar leitura durante a fala.
+      </p>
+      <div class="accent-bar"></div>
+    </article>
+
+    <article id="slide-2" class="slide-container">
+      <div class="eyebrow">Lens / Tema · 2 de 3</div>
+      <h1>Segundo ponto com contexto</h1>
+      <p>
+        Explique o problema, contexto ou decisao tecnica com foco no impacto.
+        Se tiver numero importante, inclua aqui para reforcar a narrativa.
+      </p>
+      <div class="accent-bar"></div>
+    </article>
+
+    <article id="slide-3" class="slide-container">
+      <div class="eyebrow">Lens / Tema · 3 de 3</div>
+      <h1>Fechamento e proximo passo</h1>
+      <p>
+        Finalize com conclusao objetiva e, se necessario, apresente os proximos
+        passos para implementacao ou evolucao.
+      </p>
+      <div class="accent-bar"></div>
+    </article>
+
+    <div class="footer-row">
+      <div class="counter" id="counter">Slide 1 de 3</div>
+      <div class="controls">
+        <button class="outline" id="prevBtn" type="button">Anterior</button>
+        <button class="primary" id="nextBtn" type="button">Proximo</button>
+      </div>
+    </div>
+  </section>
+</main>
+
+<script>
+  let currentSlide = 1;
+  const slides = document.querySelectorAll('.slide-container');
+  const totalSlides = slides.length;
+
+  function render() {
+    slides.forEach((slide, index) => {
+      slide.classList.toggle('active', index === currentSlide - 1);
+    });
+
+    document.getElementById('prevBtn').disabled = currentSlide === 1;
+    document.getElementById('nextBtn').disabled = currentSlide === totalSlides;
+    document.getElementById('counter').textContent = `Slide ${currentSlide} de ${totalSlides}`;
+  }
+
+  function nextSlide() {
+    if (currentSlide < totalSlides) {
+      currentSlide += 1;
+      render();
+    }
+  }
+
+  function prevSlide() {
+    if (currentSlide > 1) {
+      currentSlide -= 1;
+      render();
+    }
+  }
+
+  document.getElementById('nextBtn').addEventListener('click', nextSlide);
+  document.getElementById('prevBtn').addEventListener('click', prevSlide);
+
+  document.addEventListener('keydown', (event) => {
+    if (event.key === 'ArrowRight') nextSlide();
+    if (event.key === 'ArrowLeft') prevSlide();
+  });
+
+  render();
+</script>
+</body>
+</html>

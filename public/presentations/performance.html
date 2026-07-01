@@ -1,0 +1,1340 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#061025" />
+    <link rel="icon" href="data:," />
+    <title>Workshop: Práticas com INP</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Nunito:ital,wght@0,300;0,400;0,600;0,700;0,800;0,900;1,300&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      *,
+      *::before,
+      *::after {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+
+      :root {
+        --accent: #03b4fc;
+        --accent-soft: rgba(3, 180, 252, 0.2);
+        --bg-deep: #061025;
+        --bg-mid: #072d79;
+        --bg-light: #0198ea;
+        --panel: rgba(4, 15, 55, 0.56);
+        --panel-strong: rgba(3, 10, 35, 0.78);
+        --text: #ffffff;
+        --muted: rgba(255, 255, 255, 0.68);
+        --border: rgba(255, 255, 255, 0.16);
+        --good: #2ecc71;
+        --warn: #f1c40f;
+        --bad: #ff6b6b;
+        --blue: #8bd8ff;
+        --shadow: 0 22px 60px rgba(0, 0, 0, 0.28);
+      }
+
+      html,
+      body {
+        width: 100%;
+        height: 100%;
+        overflow: hidden;
+        background:
+          radial-gradient(circle at 20% 20%, rgba(255, 255, 255, 0.08), transparent 28%),
+          radial-gradient(circle at 80% 12%, rgba(3, 180, 252, 0.2), transparent 24%),
+          linear-gradient(135deg, var(--bg-deep) 0%, var(--bg-mid) 52%, var(--bg-light) 100%);
+        color: var(--text);
+        font-family: "Nunito", system-ui, -apple-system, sans-serif;
+      }
+
+      body::before,
+      body::after {
+        content: "";
+        position: fixed;
+        inset: auto;
+        pointer-events: none;
+        z-index: 0;
+        filter: blur(40px);
+      }
+
+      body::before {
+        width: 320px;
+        height: 320px;
+        left: -60px;
+        top: -40px;
+        background: rgba(139, 216, 255, 0.12);
+      }
+
+      body::after {
+        width: 420px;
+        height: 420px;
+        right: -90px;
+        bottom: -120px;
+        background: rgba(3, 180, 252, 0.14);
+      }
+
+      #presentation {
+        position: relative;
+        z-index: 1;
+        width: 100vw;
+        height: 100vh;
+      }
+
+      .slide {
+        position: absolute;
+        inset: 0;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        padding: clamp(28px, 4vh, 64px) clamp(24px, 5vw, 84px);
+        opacity: 0;
+        transform: translateX(48px);
+        transition:
+          opacity 0.36s ease,
+          transform 0.36s ease;
+        pointer-events: none;
+      }
+
+      .slide.active {
+        opacity: 1;
+        transform: translateX(0);
+        pointer-events: all;
+      }
+
+      .slide.exit {
+        opacity: 0;
+        transform: translateX(-48px);
+      }
+
+      .slide-stage {
+        width: 100%;
+        max-width: 1366px;
+        transform: scale(var(--content-scale, 1));
+        transform-origin: center top;
+        will-change: transform;
+      }
+
+      .slide-cover {
+        overflow: hidden;
+        text-align: center;
+      }
+
+      .slide-content {
+        justify-content: flex-start;
+        width: 100%;
+        max-width: 1366px;
+        margin: 0 auto;
+        text-align: center;
+      }
+
+      .cover-badge,
+      .eyebrow {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        padding: 8px 18px;
+        border-radius: 999px;
+        border: 1px solid rgba(255, 255, 255, 0.32);
+        background: rgba(255, 255, 255, 0.1);
+        color: rgba(255, 255, 255, 0.92);
+        font-size: 12px;
+        font-weight: 800;
+        letter-spacing: 2px;
+        text-transform: uppercase;
+      }
+
+      .cover-wrap {
+        position: relative;
+        z-index: 1;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 26px;
+        max-width: 880px;
+        margin: 0 auto;
+      }
+
+      .cover-title {
+        font-size: clamp(40px, 7vw, 78px);
+        font-weight: 900;
+        letter-spacing: -2.4px;
+        line-height: 1.02;
+      }
+
+      .accent {
+        color: var(--accent);
+      }
+
+      .cover-sub,
+      .slide-subtitle,
+      .muted-copy {
+        color: var(--muted);
+        line-height: 1.65;
+      }
+
+      .cover-sub {
+        max-width: 680px;
+        font-size: clamp(17px, 2vw, 22px);
+      }
+
+      .tool-chips,
+      .threshold-row,
+      .meta-row,
+      .context-row {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 12px;
+      }
+
+      .tool-chip,
+      .threshold-pill,
+      .context-pill {
+        border-radius: 12px;
+        border: 1px solid var(--border);
+        background: rgba(1, 9, 34, 0.44);
+        box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.05);
+      }
+
+      .tool-chip {
+        padding: 10px 18px;
+        font-size: 14px;
+        font-weight: 700;
+        letter-spacing: 0.4px;
+      }
+
+      .hero-speedometer {
+        position: absolute;
+        z-index: 0;
+        width: 100%;
+        height: 100%;
+        opacity: 0.12;
+        pointer-events: none;
+        transform: translateY(90px) scale(1.06);
+        bottom: 90px;
+      }
+
+      .hero-speedometer .dial-arc {
+        fill: none;
+        stroke-linecap: round;
+        stroke-width: 12;
+        filter: drop-shadow(0 0 18px rgba(255, 255, 255, 0.16));
+      }
+
+      .hero-speedometer .dial-base {
+        fill: none;
+        stroke: rgba(255, 255, 255, 0.12);
+        stroke-width: 2;
+      }
+
+      .hero-speedometer .needle {
+        transform-origin: 480px 470px;
+        transform: rotate(42deg);
+      }
+
+      .slide.active .hero-speedometer .needle {
+        animation: needle-cycle 15s cubic-bezier(0.2, 0.75, 0.2, 1) infinite;
+      }
+
+      @keyframes needle-cycle {
+        0% {
+          transform: rotate(-120deg);
+        }
+        10%,
+        100% {
+          transform: rotate(42deg);
+        }
+      }
+
+      .speed-label {
+        font-size: 16px;
+        font-weight: 700;
+        fill: rgba(255, 255, 255, 0.84);
+      }
+
+      .speed-range {
+        display: none;
+      }
+
+      .slide-title {
+        width: 100%;
+        font-size: clamp(34px, 5vw, 64px);
+        font-weight: 900;
+        letter-spacing: -1.4px;
+        line-height: 1.05;
+        margin-bottom: 16px;
+      }
+
+      .slide-subtitle {
+        width: 100%;
+        max-width: 780px;
+        margin: 0 auto 26px;
+        font-size: clamp(15px, 1.7vw, 20px);
+      }
+
+      .callout {
+        width: 100%;
+        max-width: 950px;
+        padding: 18px 22px;
+        margin: 0 auto;
+        border-radius: 0 14px 14px 0;
+        border-left: 4px solid rgba(255, 255, 255, 0.78);
+        background: rgba(3, 10, 35, 0.5);
+        text-align: left;
+        font-size: clamp(15px, 1.5vw, 18px);
+        line-height: 1.65;
+      }
+
+      .card-grid,
+      .compare,
+      .workshop-grid {
+        display: grid;
+        width: 100%;
+        gap: 22px;
+      }
+
+      .card-grid.two,
+      .compare,
+      .workshop-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+
+      .card,
+      .compare-col,
+      .news-card,
+      .threshold-pill,
+      .metric-card {
+        background: var(--panel);
+        border: 1px solid var(--border);
+        backdrop-filter: blur(8px);
+        box-shadow: var(--shadow);
+      }
+
+      .card,
+      .compare-col,
+      .news-card,
+      .metric-card {
+        border-radius: 18px;
+      }
+
+      .threshold-pill {
+        padding: 12px 16px;
+        border-radius: 14px;
+        min-width: 220px;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        justify-content: center;
+        font-size: 13px;
+        font-weight: 700;
+      }
+
+      .threshold-pill.good {
+        border-color: rgba(46, 204, 113, 0.36);
+      }
+
+      .threshold-pill.warn {
+        border-color: rgba(241, 196, 15, 0.36);
+      }
+
+      .threshold-pill.bad {
+        border-color: rgba(255, 107, 107, 0.36);
+      }
+
+      .dot {
+        width: 12px;
+        height: 12px;
+        border-radius: 50%;
+        flex-shrink: 0;
+      }
+
+      .dot.good {
+        background: var(--good);
+      }
+
+      .dot.warn {
+        background: var(--warn);
+      }
+
+      .dot.bad {
+        background: var(--bad);
+      }
+
+      .inp-layout {
+        width: 100%;
+        display: flex;
+        flex-direction: column;
+        gap: 28px;
+        margin-top: 56px;
+      }
+
+      #s1 {
+        justify-content: center;
+        padding-top: 42px;
+      }
+
+      #s1 .slide-title {
+        margin-bottom: 12px;
+        font-size: clamp(30px, 4.4vw, 56px);
+      }
+
+      #s1 .callout {
+        max-width: 1080px;
+        padding: 14px 18px;
+        font-size: clamp(14px, 1.35vw, 16px);
+      }
+
+      #s1 .inp-layout {
+        gap: 36px;
+        margin-top: 32px;
+      }
+
+      #s1 .inp-bar {
+        padding: 18px;
+      }
+
+      #s1 .metric-grid {
+        gap: 12px;
+      }
+
+      #s1 .metric-card {
+        padding: 15px 16px 16px;
+      }
+
+      #s1 .metric-card h3 {
+        font-size: 15px;
+        margin-bottom: 6px;
+      }
+
+      #s1 .metric-card p {
+        font-size: 12px;
+      }
+
+      #s1 .threshold-pill {
+        min-width: 208px;
+        padding: 10px 14px;
+      }
+
+      #s1 .muted-copy {
+        font-size: 13px;
+      }
+
+      #s2, #s3, #s4, #s5 {
+        justify-content: center;
+      }
+
+      .inp-bar {
+        width: 100%;
+        max-width: 1120px;
+        margin: 0 auto;
+        padding: 28px;
+        border-radius: 24px;
+        background: rgba(3, 10, 35, 0.38);
+        border: 1px solid rgba(255, 255, 255, 0.12);
+      }
+
+      .inp-track {
+        width: 100%;
+        min-height: 88px;
+        display: grid;
+        grid-template-columns: 1.15fr 1.35fr 0.95fr;
+        gap: 10px;
+      }
+
+      .inp-segment {
+        position: relative;
+        display: flex;
+        align-items: flex-start;
+        min-height: 88px;
+        border-radius: 16px;
+        overflow: hidden;
+        padding: 16px 18px;
+        text-align: left;
+      }
+
+      .inp-segment span {
+        position: relative;
+        z-index: 1;
+        font-size: 13px;
+        font-weight: 800;
+        letter-spacing: 0.5px;
+        text-transform: uppercase;
+      }
+
+      .inp-segment small {
+        display: block;
+        margin-top: 6px;
+        color: rgba(255, 255, 255, 0.78);
+        font-size: 12px;
+        font-weight: 600;
+      }
+
+      .inp-segment::after {
+        content: "";
+        position: absolute;
+        inset: 0;
+        opacity: 0.22;
+      }
+
+      .inp-segment.delay {
+        background: linear-gradient(135deg, rgba(241, 196, 15, 0.24), rgba(241, 196, 15, 0.44));
+      }
+
+      .inp-segment.delay::after {
+        background: rgba(241, 196, 15, 0.5);
+      }
+
+      .inp-segment.processing {
+        background: linear-gradient(135deg, rgba(255, 107, 107, 0.22), rgba(255, 107, 107, 0.42));
+      }
+
+      .inp-segment.processing::after {
+        background: rgba(255, 107, 107, 0.5);
+      }
+
+      .inp-segment.paint {
+        background: linear-gradient(135deg, rgba(3, 180, 252, 0.22), rgba(3, 180, 252, 0.42));
+      }
+
+      .inp-segment.paint::after {
+        background: rgba(3, 180, 252, 0.52);
+      }
+
+      .metric-grid {
+        width: 100%;
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 16px;
+      }
+
+      .metric-card {
+        padding: 18px 18px 20px;
+        text-align: left;
+      }
+
+      .metric-card h3 {
+        font-size: 16px;
+        font-weight: 800;
+        margin-bottom: 8px;
+      }
+
+      .metric-card p {
+        font-size: 13px;
+        line-height: 1.58;
+        color: var(--muted);
+      }
+
+      .news-slide-headline {
+        font-size: clamp(28px, 4vw, 50px);
+        font-weight: 800;
+        line-height: 1.08;
+      }
+
+      .news-slide-answer {
+        margin-top: 2px;
+        margin-bottom: 28px;
+        font-size: 68px;
+        font-weight: 900;
+        line-height: 0.95;
+        letter-spacing: -3px;
+        color: var(--accent);
+      }
+
+      .news-stack {
+        display: flex;
+        flex-direction: column;
+        gap: 22px;
+        align-items: center;
+      }
+
+      .news-card {
+        width: 100%;
+        max-width: 880px;
+        overflow: hidden;
+        text-align: left;
+      }
+
+      .news-card-head {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        padding: 14px 18px;
+        background: rgba(1, 6, 24, 0.56);
+        border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+        font-size: 12px;
+        color: var(--muted);
+      }
+
+      .g-badge {
+        width: 24px;
+        height: 24px;
+        display: grid;
+        place-items: center;
+        border-radius: 50%;
+        font-size: 13px;
+        font-weight: 900;
+        color: #1f1f1f;
+        background: linear-gradient(135deg, #ffffff 0%, #dff5ff 100%);
+      }
+
+      .news-card-body {
+        padding: 24px 26px 22px;
+      }
+
+      .news-card-title {
+        font-size: clamp(21px, 2.4vw, 30px);
+        font-weight: 800;
+        line-height: 1.28;
+      }
+
+      .news-card-quote {
+        margin-top: 16px;
+        font-size: clamp(17px, 2vw, 22px);
+        font-weight: 700;
+        line-height: 1.55;
+      }
+
+      .news-card-footer {
+        margin-top: 16px;
+        font-size: 12px;
+        color: var(--muted);
+        word-break: break-word;
+      }
+
+      .flow {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 10px;
+        flex-wrap: wrap;
+      }
+
+      .flow-step,
+      .flow-arrow {
+        flex-shrink: 0;
+      }
+
+      .flow-step {
+        min-width: 150px;
+        padding: 16px 18px;
+        border-radius: 14px;
+        border: 1px solid var(--border);
+        background: rgba(3, 10, 35, 0.44);
+        font-size: 13px;
+        font-weight: 800;
+        letter-spacing: 0.7px;
+        text-transform: uppercase;
+      }
+
+      .flow-step.hl {
+        border-color: rgba(3, 180, 252, 0.44);
+        background: rgba(3, 180, 252, 0.11);
+      }
+
+      .flow-arrow {
+        font-size: 20px;
+        color: rgba(255, 255, 255, 0.5);
+      }
+
+      .compare {
+        position: relative;
+        align-items: stretch;
+        margin-top: 52px;
+      }
+
+      .compare-col {
+        padding: 28px 28px 26px;
+        text-align: left;
+      }
+
+      .compare-col.bad {
+        border-color: rgba(255, 107, 107, 0.34);
+      }
+
+      .compare-col.good {
+        border-color: rgba(46, 204, 113, 0.36);
+      }
+
+      .compare-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 12px;
+        margin-bottom: 18px;
+        font-size: 14px;
+        font-weight: 800;
+        letter-spacing: 1px;
+        text-transform: uppercase;
+      }
+
+      .compare-kicker {
+        color: var(--muted);
+        font-size: 11px;
+        font-weight: 700;
+        letter-spacing: 1.6px;
+      }
+
+      .big-number {
+        font-size: clamp(60px, 9vw, 112px);
+        font-weight: 900;
+        letter-spacing: -3px;
+        line-height: 0.96;
+        margin-bottom: 10px;
+      }
+
+      .compare-col.bad .big-number {
+        color: var(--bad);
+      }
+
+      .compare-col.good .big-number {
+        color: var(--good);
+      }
+
+      .compare-text {
+        color: var(--muted);
+        font-size: 14px;
+        line-height: 1.6;
+        min-height: 66px;
+      }
+
+      .compare-bar {
+        width: 100%;
+        height: 10px;
+        margin-top: 18px;
+        border-radius: 999px;
+        overflow: hidden;
+        background: rgba(255, 255, 255, 0.08);
+      }
+
+      .compare-fill {
+        height: 100%;
+        border-radius: 999px;
+      }
+
+      .compare-col.bad .compare-fill {
+        width: 88%;
+        background: linear-gradient(90deg, rgba(255, 107, 107, 0.7), rgba(255, 107, 107, 0.95));
+      }
+
+      .compare-col.good .compare-fill {
+        width: 14%;
+        background: linear-gradient(90deg, rgba(46, 204, 113, 0.7), rgba(46, 204, 113, 0.95));
+      }
+
+      .compare-delta {
+        position: absolute;
+        left: 50%;
+        top: 50%;
+        transform: translate(-50%, -50%);
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        padding: 14px 18px;
+        border-radius: 999px;
+        border: 1px solid rgba(46, 204, 113, 0.34);
+        background: rgba(5, 24, 24, 0.84);
+        color: var(--good);
+        font-size: clamp(18px, 2vw, 28px);
+        font-weight: 900;
+        box-shadow: 0 12px 34px rgba(0, 0, 0, 0.3);
+      }
+
+      .meta-row {
+        margin-top: 12px;
+        color: rgba(255, 255, 255, 0.7);
+        font-size: 12px;
+        letter-spacing: 1.2px;
+        text-transform: uppercase;
+      }
+
+      .context-row {
+        margin-top: 16px;
+        margin-bottom: 8px;
+      }
+
+      .context-pill {
+        display: inline-flex;
+        align-items: center;
+        gap: 10px;
+        padding: 12px 14px;
+        font-size: 13px;
+        text-align: left;
+      }
+
+      .context-label {
+        font-size: 11px;
+        font-weight: 800;
+        letter-spacing: 1.2px;
+        text-transform: uppercase;
+        color: rgba(255, 255, 255, 0.74);
+      }
+
+      .context-pill code {
+        color: var(--text);
+        font-size: 12px;
+        font-family: "Courier New", monospace;
+      }
+
+      .context-pill.good {
+        border-color: rgba(46, 204, 113, 0.28);
+      }
+
+      .context-pill.bad {
+        border-color: rgba(255, 107, 107, 0.28);
+      }
+
+      .case-note {
+        max-width: 920px;
+        margin: 24px auto 0;
+        color: var(--muted);
+        font-size: 13px;
+        line-height: 1.65;
+      }
+
+      .workshop-grid {
+        margin-top: 36px;
+      }
+
+      .card {
+        padding: 26px;
+        text-align: left;
+      }
+
+      .card h3 {
+        font-size: 28px;
+        font-weight: 900;
+        letter-spacing: -0.8px;
+        margin-bottom: 12px;
+      }
+
+      .card p {
+        color: var(--muted);
+        line-height: 1.6;
+      }
+
+      .card-tag {
+        display: inline-block;
+        margin-bottom: 12px;
+        padding: 4px 10px;
+        border-radius: 999px;
+        font-size: 11px;
+        font-weight: 800;
+        letter-spacing: 1.2px;
+        text-transform: uppercase;
+        background: rgba(255, 255, 255, 0.08);
+        color: rgba(255, 255, 255, 0.78);
+      }
+
+      .card.workflow-ai {
+        border-color: rgba(3, 180, 252, 0.42);
+        background: rgba(3, 180, 252, 0.08);
+      }
+
+      .card.workflow-ai .card-tag {
+        background: rgba(3, 180, 252, 0.16);
+        color: var(--accent);
+      }
+
+      .feature-list {
+        list-style: none;
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+      }
+
+      .feature-list li {
+        display: flex;
+        gap: 12px;
+        align-items: flex-start;
+        color: rgba(255, 255, 255, 0.92);
+        font-size: 16px;
+        line-height: 1.55;
+      }
+
+      .feature-list li span {
+        flex-shrink: 0;
+      }
+
+      @media (max-width: 1180px) {
+        .slide {
+          padding: 32px 28px;
+        }
+
+        .compare,
+        .workshop-grid,
+        .card-grid.two,
+        .metric-grid {
+          grid-template-columns: 1fr;
+        }
+
+        .compare-delta {
+          position: static;
+          transform: none;
+          margin: 0 auto;
+        }
+
+        .inp-track {
+          grid-template-columns: 1fr;
+        }
+      }
+
+      @media (max-width: 760px) {
+        .tool-chip,
+        .threshold-pill,
+        .context-pill,
+        .flow-step {
+          width: 100%;
+        }
+
+        .slide-title {
+          font-size: clamp(24px, 7vw, 42px);
+        }
+
+        .slide-subtitle,
+        .callout,
+        .feature-list li,
+        .compare-text,
+        .case-note {
+          font-size: 14px;
+        }
+
+        .card,
+        .compare-col,
+        .metric-card,
+        .news-card-body,
+        .inp-bar {
+          padding: 18px;
+        }
+
+        .news-slide-answer,
+        .big-number {
+          font-size: clamp(42px, 14vw, 78px);
+        }
+      }
+
+      @media (max-height: 820px) {
+        .slide {
+          padding: 24px;
+        }
+
+        .cover-wrap,
+        .news-stack,
+        .inp-layout,
+        .workshop-grid,
+        .compare {
+          gap: 16px;
+        }
+
+        .cover-title,
+        .slide-title {
+          line-height: 0.98;
+        }
+
+        .cover-sub,
+        .slide-subtitle,
+        .callout,
+        .feature-list li,
+        .compare-text,
+        .case-note,
+        .metric-card p {
+          font-size: 13px;
+          line-height: 1.45;
+        }
+      }
+
+      @media (max-height: 700px) {
+        .tool-chips,
+        .threshold-row,
+        .meta-row,
+        .context-row,
+        .flow,
+        .feature-list,
+        .metric-grid,
+        .compare,
+        .workshop-grid {
+          gap: 10px;
+        }
+
+        .cover-badge,
+        .eyebrow,
+        .tool-chip,
+        .threshold-pill,
+        .context-pill,
+        .flow-step,
+        .compare-header,
+        .feature-list li,
+        .metric-card h3,
+        .metric-card p,
+        .case-note {
+          font-size: 12px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div id="presentation">
+      <section class="slide slide-cover" id="s0">
+        <svg
+          class="hero-speedometer"
+          viewBox="0 0 960 540"
+          aria-hidden="true"
+          preserveAspectRatio="xMidYMid meet"
+        >
+          <defs>
+            <radialGradient id="dialGlow" cx="50%" cy="50%" r="65%">
+              <stop offset="0%" stop-color="#ffffff" stop-opacity="0.18" />
+              <stop offset="100%" stop-color="#ffffff" stop-opacity="0" />
+            </radialGradient>
+          </defs>
+          <circle cx="480" cy="290" r="220" fill="url(#dialGlow)" />
+          <path class="dial-base" d="M 220 470 A 260 260 0 0 1 740 470" />
+          <path class="dial-arc" d="M 220 470 A 260 260 0 0 1 390 245" stroke="#ff6b6b" />
+          <path class="dial-arc" d="M 390 245 A 260 260 0 0 1 590 245" stroke="#f1c40f" />
+          <path class="dial-arc" d="M 590 245 A 260 260 0 0 1 740 470" stroke="#2ecc71" />
+          <g class="needle">
+            <line x1="480" y1="470" x2="656" y2="318" stroke="#ffffff" stroke-width="5" stroke-linecap="round" />
+            <circle cx="480" cy="470" r="16" fill="#ffffff" />
+            <circle cx="480" cy="470" r="7" fill="#03b4fc" />
+          </g>
+          <text x="200" y="500" class="speed-label">0ms</text>
+          <text x="452" y="180" class="speed-label">200ms</text>
+          <text x="714" y="500" class="speed-label">500ms</text>
+          <text x="290" y="206" class="speed-range">ruim</text>
+          <text x="450" y="135" class="speed-range">precisa melhorar</text>
+          <text x="635" y="206" class="speed-range">bom</text>
+        </svg>
+
+        <div class="slide-stage">
+          <div class="cover-wrap">
+            <div class="cover-badge">ECOA 2026 · Workshop</div>
+            <div class="cover-title">Práticas com <span class="accent">INP</span></div>
+            <div class="cover-sub">
+              Como medir, melhorar e proteger sua métrica de Interaction to Next Paint.
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="slide slide-content" id="s1">
+        <div class="slide-stage">
+          <div class="slide-title">O que é <span class="accent">INP</span>?</div>
+          <div class="callout">
+            INP mede o tempo entre a interação do usuário e a próxima atualização visual perceptível. Ele mostra o custo real da resposta da interface, não apenas o tempo do JavaScript.
+          </div>
+
+          <div class="inp-layout">
+            <div class="inp-bar">
+              <div class="inp-track">
+                <div class="inp-segment delay">
+                  <div>
+                    <span>Input Delay</span>
+                    <small>o evento ainda está esperando o main thread</small>
+                  </div>
+                </div>
+                <div class="inp-segment processing">
+                  <div>
+                    <span>Processing Time</span>
+                    <small>handlers, analytics e trabalho síncrono competem pela resposta</small>
+                  </div>
+                </div>
+                <div class="inp-segment paint">
+                  <div>
+                    <span>Presentation Delay</span>
+                    <small>o browser ainda precisa compor e pintar o próximo frame</small>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="threshold-row">
+              <div class="threshold-pill good"><span class="dot good"></span>Bom: &lt; 200ms</div>
+              <div class="threshold-pill warn"><span class="dot warn"></span>Precisa melhorar: 200-500ms</div>
+              <div class="threshold-pill bad"><span class="dot bad"></span>Ruim: &gt; 500ms</div>
+            </div>
+
+            <div class="muted-copy">Medido no <strong>P75</strong> da distribuição de interações de usuários reais, com base em CrUX.</div>
+          </div>
+        </div>
+      </section>
+
+      <section class="slide slide-content" id="s2">
+        <div class="slide-stage">
+          <div class="news-stack">
+            <div class="eyebrow">SEO · IA generativa · visibilidade</div>
+            <div class="news-slide-headline">Performance ainda é importante na era da IA?</div>
+            <div class="news-slide-answer">Sim.</div>
+
+            <article class="news-card">
+              <div class="news-card-head">
+                <div class="g-badge">G</div>
+                <div>developers.google.com · Search Central</div>
+              </div>
+              <div class="news-card-body">
+                <div class="news-card-title">AI Optimization Guide — Google Search Central</div>
+                <div class="news-card-quote">
+                  Em resumo: as práticas recomendadas de SEO continuam relevantes porque os recursos de IA generativa na Pesquisa Google estão enraizados nos sistemas tradicionais de classificação e qualidade.
+                </div>
+                <div class="news-card-footer">
+                  https://developers.google.com/search/docs/fundamentals/ai-optimization-guide
+                </div>
+              </div>
+            </article>
+
+            <div class="flow" style="margin-top: 4px">
+              <div class="flow-step hl">Busca com IA</div>
+              <div class="flow-arrow">→</div>
+              <div class="flow-step hl">RAG recupera páginas</div>
+              <div class="flow-arrow">→</div>
+              <div class="flow-step hl">SEO e CWV filtram</div>
+              <div class="flow-arrow">→</div>
+              <div class="flow-step hl">Performance = visibilidade</div>
+            </div>
+
+            <div class="callout">
+              Se a resposta com IA se apoia nos resultados da busca e o Google continua recomendando boa estrutura técnica, baixa latência e experiência consistente em todos os dispositivos, performance segue no centro da descoberta.
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="slide slide-content" id="s3">
+        <div class="slide-stage">
+          <div class="slide-title">Exemplo 1: <span class="accent">Fluxo principal de navegação</span></div>
+          <div class="context-row">
+            <div class="context-pill bad">
+              <span class="context-label">Problema</span>
+              <code>trabalho síncrono no momento da interação</code>
+            </div>
+            <div class="context-pill good">
+              <span class="context-label">Solução</span>
+              <code>liberar o frame cedo e adiar tarefas secundárias</code>
+            </div>
+          </div>
+
+          <div class="compare">
+            <div class="compare-col bad">
+              <div class="compare-header">
+                <span>Antes</span>
+                <span class="compare-kicker">set/2025</span>
+              </div>
+              <div class="big-number">302ms</div>
+            </div>
+
+            <div class="compare-col good">
+              <div class="compare-header">
+                <span>Depois</span>
+                <span class="compare-kicker">abr/2026</span>
+              </div>
+              <div class="big-number">184ms</div>
+            </div>
+
+            <div class="compare-delta">↓ 39%</div>
+          </div>
+        </div>
+      </section>
+
+      <section class="slide slide-content" id="s4">
+        <div class="slide-stage">
+          <div class="slide-title">Exemplo 2: <span class="accent">Fluxo de conteúdo interativo</span></div>
+          <div class="context-row">
+            <div class="context-pill bad">
+              <span class="context-label">Problema</span>
+              <code>tarefas não essenciais competiam no caminho crítico</code>
+            </div>
+            <div class="context-pill good">
+              <span class="context-label">Solução</span>
+              <code>quebra de tarefas para reduzir atraso percebido</code>
+            </div>
+          </div>
+
+          <div class="compare">
+            <div class="compare-col bad">
+              <div class="compare-header">
+                <span>Antes</span>
+                <span class="compare-kicker">nov/2025</span>
+              </div>
+              <div class="big-number">&gt;346ms</div>
+            </div>
+
+            <div class="compare-col good">
+              <div class="compare-header">
+                <span>Depois</span>
+                <span class="compare-kicker">abr/2026</span>
+              </div>
+              <div class="big-number">&lt;256ms</div>
+            </div>
+
+            <div class="compare-delta">↓ 26%</div>
+          </div>
+        </div>
+      </section>
+
+      <section class="slide slide-content" id="s5">
+        <div class="slide-stage">
+          <div class="slide-title">Como fazer isso <span class="accent">na prática</span>?</div>
+
+          <div class="flow">
+            <div class="flow-step hl">Medir INP</div>
+            <div class="flow-arrow">→</div>
+            <div class="flow-step hl">Aplicar melhoria</div>
+            <div class="flow-arrow">→</div>
+            <div class="flow-step hl">Prevenir regressão</div>
+          </div>
+
+          <div class="workshop-grid">
+            <article class="card">
+              <div class="card-tag">Parte 1</div>
+              <h3>Fluxo Manual</h3>
+              <p style="margin-bottom: 18px">
+                O caminho clássico para entender a métrica e corrigir o gargalo com instrumentação direta.
+              </p>
+              <ul class="feature-list">
+                <li><span>🔍</span><div>Medir o INP no Chrome DevTools e localizar a interação mais cara.</div></li>
+                <li><span>🔧</span><div>Identificar o gargalo do handler e aplicar a estratégia de melhoria.</div></li>
+                <li><span>🧪</span><div>Escrever um teste automatizado para garantir que a regressão não volte.</div></li>
+              </ul>
+            </article>
+
+            <article class="card workflow-ai">
+              <div class="card-tag">Parte 2</div>
+              <h3>Fluxo com IA</h3>
+              <p style="margin-bottom: 18px">
+                O mesmo rigor técnico, mas com MCPs e Skills acelerando diagnóstico, implementação e validação.
+              </p>
+              <ul class="feature-list">
+                <li><span>🤖</span><div>Chrome DevTools MCP guia o diagnóstico do gargalo com contexto do projeto.</div></li>
+                <li><span>🔍</span><div>Medir e interpretar a cadeia do INP com apoio do agente durante a análise.</div></li>
+                <li><span>🔧</span><div>Aplicar a melhoria sugerida e revisar o efeito no caminho crítico.</div></li>
+                <li><span>🧪</span><div>Geração de teste automatizado via Skill com Playwright</div></li>
+              </ul>
+            </article>
+          </div>
+        </div>
+      </section>
+    </div>
+
+    <script>
+      (function () {
+        const presentation = document.getElementById('presentation');
+        const slides = document.querySelectorAll('.slide');
+        const total = slides.length;
+        let cur = 0;
+
+        function getStage(slide) {
+          return slide.querySelector('.slide-stage') || slide;
+        }
+
+        function measureContentBounds(slide) {
+          const stage = getStage(slide);
+          const stageRect = stage.getBoundingClientRect();
+          const childRects = Array.from(stage.children)
+            .filter((child) => getComputedStyle(child).position !== 'absolute')
+            .map((child) => child.getBoundingClientRect());
+
+          if (!childRects.length) {
+            return {
+              width: stageRect.width,
+              height: stageRect.height,
+            };
+          }
+
+          const left = Math.min(...childRects.map((rect) => rect.left - stageRect.left));
+          const right = Math.max(...childRects.map((rect) => rect.right - stageRect.left));
+          const top = Math.min(...childRects.map((rect) => rect.top - stageRect.top));
+          const bottom = Math.max(...childRects.map((rect) => rect.bottom - stageRect.top));
+
+          return {
+            width: right - left,
+            height: bottom - top,
+          };
+        }
+
+        function fitSlide(slide) {
+          slide.style.setProperty('--content-scale', '1');
+
+          const stage = getStage(slide);
+          const slideRect = slide.getBoundingClientRect();
+          const stageRect = stage.getBoundingClientRect();
+          const bounds = measureContentBounds(slide);
+          const widthScale = slide.clientWidth / Math.max(bounds.width, slide.clientWidth);
+          const topOffset = Math.max(stageRect.top - slideRect.top, 0);
+          const availableHeight = Math.max(slide.clientHeight - topOffset, 1);
+          const heightScale = availableHeight / Math.max(bounds.height, availableHeight);
+          const nextScale = Math.min(widthScale, heightScale, 1);
+          const safeScale = nextScale < 1 ? nextScale * 0.98 : 1;
+
+          slide.style.setProperty('--content-scale', String(safeScale));
+        }
+
+        function updateUi() {
+          slides.forEach((slide, index) => {
+            if (index !== cur) {
+              slide.style.setProperty('--content-scale', '1');
+            }
+          });
+          fitSlide(slides[cur]);
+          window.location.hash = String(cur + 1);
+        }
+
+        function goTo(nextIndex) {
+          if (nextIndex < 0 || nextIndex >= total || nextIndex === cur) return;
+
+          const leaving = slides[cur];
+          leaving.classList.remove('active');
+          leaving.classList.add('exit');
+          window.setTimeout(() => leaving.classList.remove('exit'), 380);
+
+          cur = nextIndex;
+          slides[cur].classList.add('active');
+          updateUi();
+        }
+
+        const hash = parseInt(window.location.hash.replace('#', ''), 10);
+        const initial = !Number.isNaN(hash) && hash >= 1 && hash <= total ? hash - 1 : 0;
+        slides[initial].classList.add('active');
+        cur = initial;
+        updateUi();
+
+        presentation.addEventListener('click', (event) => {
+          if (event.target.closest('a, button')) return;
+
+          const bounds = presentation.getBoundingClientRect();
+          const isLeftHalf = event.clientX - bounds.left < bounds.width / 2;
+          goTo(cur + (isLeftHalf ? -1 : 1));
+        });
+
+        document.addEventListener('keydown', (event) => {
+          if (event.key === 'ArrowRight' || event.key === 'ArrowDown' || event.key === ' ') {
+            event.preventDefault();
+            goTo(cur + 1);
+          } else if (event.key === 'ArrowLeft' || event.key === 'ArrowUp') {
+            event.preventDefault();
+            goTo(cur - 1);
+          } else if (event.key === 'Home') {
+            event.preventDefault();
+            goTo(0);
+          } else if (event.key === 'End') {
+            event.preventDefault();
+            goTo(total - 1);
+          }
+        });
+
+        window.addEventListener('hashchange', () => {
+          const nextHash = parseInt(window.location.hash.replace('#', ''), 10);
+          if (!Number.isNaN(nextHash) && nextHash >= 1 && nextHash <= total) {
+            const nextIndex = nextHash - 1;
+            if (nextIndex !== cur) goTo(nextIndex);
+          }
+        });
+
+        window.addEventListener('resize', () => fitSlide(slides[cur]));
+      })();
+    </script>
+  </body>
+</html>

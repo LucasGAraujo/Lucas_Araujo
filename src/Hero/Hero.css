@@ -1,0 +1,170 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: Inter, sans-serif;
+  background: #fff;
+}
+
+/* ========================================= */
+/* HERO PRINCIPAL                            */
+/* ========================================= */
+
+.hero {
+  min-height: calc(100vh - 80px);
+
+  background: radial-gradient(circle at 50% 0%, #1a1a1a 0%, #0a0a0a 70%);
+  color: #fff;
+
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+
+  padding: 80px 0 0 0;
+}
+
+/* container central com 80% */
+.hero-content {
+  width: 80%;
+  margin: 0 auto;
+}
+
+/* ========================================= */
+/* TEXTO                                     */
+/* ========================================= */
+
+.hero-eyebrow {
+  display: block;
+  font-size: 14px;
+  font-weight: 500;
+  color: #a1a1aa;
+  letter-spacing: 0.5px;
+  margin-bottom: 24px;
+}
+
+.hero-title {
+  font-size: 48px;
+  font-weight: 600;
+  line-height: 1.2;
+  letter-spacing: -1px;
+  color: #ffffff;
+  margin-bottom: 32px;
+  max-width: 800px;
+}
+
+.hero-description {
+  font-size: 18px;
+  line-height: 1.6;
+  color: #888888;
+  max-width: 750px;
+  margin-bottom: 60px;
+}
+
+/* ========================================= */
+/* GRID DE MÉTRICAS                          */
+/* ========================================= */
+
+.hero-metrics {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+
+  margin-top: auto;
+  border-top: 1px solid #333;
+
+  width: 100%;
+}
+
+.metric-box {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 12px;
+
+  padding: 32px 40px;
+
+  border-right: 1px solid #333;
+}
+
+.metric-box:last-child {
+  border-right: none;
+}
+
+.metric-value {
+  font-size: 40px;
+  font-weight: 500;
+  color: #ffffff;
+  line-height: 1;
+}
+
+.metric-label {
+  font-size: 11px;
+  color: #777777;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+}
+
+/* ========================================= */
+/* RESPONSIVIDADE                           */
+/* ========================================= */
+
+@media (max-width: 1280px) {
+  .hero-content {
+    width: 90%;
+  }
+
+  .hero-title {
+    font-size: 36px;
+  }
+
+  .hero-description {
+    font-size: 16px;
+  }
+
+  .metric-box {
+    padding: 24px 28px;
+  }
+}
+
+@media (max-width: 992px) {
+  .hero-metrics {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .metric-box {
+    border-bottom: 1px solid #333;
+  }
+
+  .metric-box:nth-last-child(-n+2) {
+    border-bottom: none;
+  }
+
+  .metric-box:nth-child(even) {
+    border-right: none;
+  }
+}
+
+@media (max-width: 600px) {
+  .hero-content {
+    width: 92%;
+  }
+
+  .hero-metrics {
+    grid-template-columns: 1fr;
+  }
+
+  .metric-box {
+    border-right: none;
+    border-bottom: 1px solid #333;
+  }
+
+  .metric-box:last-child {
+    border-bottom: none;
+  }
+
+  .metric-value {
+    font-size: 32px;
+  }
+}

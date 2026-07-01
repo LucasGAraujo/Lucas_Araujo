@@ -1,0 +1,537 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Token Economy Operating System</title>
+
+<style>
+  :root {
+    --bg: #f7f7f7;
+    --surface: #ffffff;
+    --text: #111111;
+    --muted: #666666;
+    --line: #e6e6e6;
+    --accent-ai: #7c3aed;
+    --accent-engineering: #3b82f6;
+    --accent-performance: #f59e0b;
+    --accent-security: #ef4444;
+  }
+
+  * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
+
+  html,
+  body {
+    width: 100%;
+    height: 100%;
+  }
+
+  body {
+    overflow: hidden;
+    font-family: Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    background:
+      radial-gradient(circle at 92% 12%, rgba(124, 58, 237, 0.08), transparent 32%),
+      radial-gradient(circle at 8% 80%, rgba(59, 130, 246, 0.08), transparent 30%),
+      var(--bg);
+    color: var(--text);
+  }
+
+  .slide-wrapper {
+    position: relative;
+    width: 100%;
+    height: 100dvh;
+    padding: clamp(20px, 3vw, 40px);
+  }
+
+  .slide-frame {
+    width: 100%;
+    height: 100%;
+    border: 1px solid var(--line);
+    border-radius: 18px;
+    background: var(--surface);
+    box-shadow: 0 10px 30px rgba(17, 17, 17, 0.08);
+    padding: clamp(18px, 3vw, 34px);
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+  }
+
+  .slide-container {
+    display: none;
+    animation: fadeIn 0.3s ease;
+    max-width: 1080px;
+  }
+
+  .slide-container.active {
+    display: block;
+  }
+
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+      transform: translateY(8px);
+    }
+
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  .eyebrow {
+    margin-bottom: 12px;
+    font-size: 12px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+
+  h1 {
+    font-size: clamp(28px, 4vw, 48px);
+    line-height: 1.1;
+    letter-spacing: -1px;
+    margin-bottom: 14px;
+  }
+
+  p {
+    max-width: 78ch;
+    font-size: clamp(15px, 1.6vw, 19px);
+    line-height: 1.6;
+    color: #3f3f46;
+    margin-bottom: 20px;
+  }
+
+  ul {
+    margin-left: 20px;
+    margin-bottom: 20px;
+  }
+
+  li {
+    font-size: clamp(14px, 1.4vw, 18px);
+    color: #3f3f46;
+    line-height: 1.6;
+    margin-bottom: 6px;
+  }
+
+  .prompt-box {
+    background: #0f1115;
+    color: #f8fafc;
+    border-radius: 10px;
+    padding: 16px;
+    border: 1px solid #20252e;
+    font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+    font-size: 13px;
+    line-height: 1.45;
+    max-height: 280px;
+    overflow: auto;
+    white-space: pre-wrap;
+  }
+
+  .grid-2 {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 14px;
+    margin-bottom: 20px;
+  }
+
+  .panel {
+    border: 1px solid var(--line);
+    background: #fafafa;
+    border-radius: 10px;
+    padding: 14px;
+  }
+
+  .panel h3 {
+    font-size: 14px;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    margin-bottom: 10px;
+    color: #1f2937;
+  }
+
+  .panel p,
+  .panel li {
+    font-size: 14px;
+  }
+
+  .kpi-grid {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 10px;
+    margin-bottom: 20px;
+  }
+
+  .kpi {
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    background: #fafafa;
+    padding: 10px;
+  }
+
+  .kpi strong {
+    display: block;
+    font-size: 20px;
+    margin-bottom: 4px;
+  }
+
+  .kpi span {
+    font-size: 11px;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    color: #6b7280;
+  }
+
+  .formula {
+    border: 1px solid #d9dce3;
+    background: #f8fafc;
+    border-radius: 10px;
+    padding: 12px;
+    margin-bottom: 16px;
+    font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+    font-size: 13px;
+    color: #111827;
+  }
+
+  .checklist {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 8px;
+    margin-bottom: 16px;
+  }
+
+  .checklist div {
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    background: #fcfcfd;
+    padding: 10px;
+    font-size: 13px;
+    color: #374151;
+  }
+
+  .accent-bar {
+    width: 130px;
+    height: 4px;
+    border-radius: 999px;
+    background: linear-gradient(
+      90deg,
+      var(--accent-ai),
+      var(--accent-engineering),
+      var(--accent-performance),
+      var(--accent-security)
+    );
+  }
+
+  .footer-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 16px;
+    margin-top: 10px;
+  }
+
+  .counter {
+    color: var(--muted);
+    font-size: 12px;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+  }
+
+  .controls {
+    display: flex;
+    gap: 10px;
+  }
+
+  .controls button {
+    border-radius: 8px;
+    font-size: 12px;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    padding: 9px 14px;
+    cursor: pointer;
+    border: 1px solid var(--text);
+  }
+
+  .controls button.primary {
+    background: var(--text);
+    color: #fff;
+  }
+
+  .controls button.outline {
+    background: #fff;
+    color: var(--text);
+    border-color: var(--line);
+  }
+
+  .controls button:disabled {
+    opacity: 0.35;
+    cursor: not-allowed;
+  }
+
+  @media (max-width: 980px) {
+    .grid-2,
+    .kpi-grid,
+    .checklist {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>
+</head>
+
+<body>
+<main class="slide-wrapper">
+  <section class="slide-frame">
+    <article id="slide-1" class="slide-container active">
+      <div class="eyebrow">Lens / Token Economy · 1 de 8</div>
+      <h1>Token Economy OS: qualidade alta com custo controlado</h1>
+      <p>
+        Eu separo pensamento estrategico de execucao operacional. O modelo premium faz
+        arquitetura e plano. O modelo economico executa com disciplina baseado nesse plano.
+      </p>
+
+      <div class="kpi-grid">
+        <div class="kpi"><strong>1x</strong><span>planejamento premium</span></div>
+        <div class="kpi"><strong>Nx</strong><span>execucao economica</span></div>
+        <div class="kpi"><strong>-30% a -70%</strong><span>tokens exploratorios</span></div>
+        <div class="kpi"><strong>+ previsibilidade</strong><span>criterio por etapa</span></div>
+      </div>
+
+      <div class="accent-bar"></div>
+    </article>
+
+    <article id="slide-2" class="slide-container">
+      <div class="eyebrow">Lens / Token Economy · 2 de 8</div>
+      <h1>Arquitetura de fluxo (2 estagios)</h1>
+      <div class="grid-2">
+        <div class="panel">
+          <h3>Estagio A · Premium</h3>
+          <ul>
+            <li>Define estrategia, escopo e ordem de execucao.</li>
+            <li>Produz plano com entregaveis e validacoes.</li>
+            <li>Consolida riscos, limites e criterios de aceite.</li>
+          </ul>
+        </div>
+        <div class="panel">
+          <h3>Estagio B · Economico Agent</h3>
+          <ul>
+            <li>Segue plano fechado, sem replanejar.</li>
+            <li>Executa tarefas por etapa com checkpoints.</li>
+            <li>Escala volume de trabalho com menor custo.</li>
+          </ul>
+        </div>
+      </div>
+      <div class="formula">Input bruto -> Planejamento premium -> Artefato estruturado -> Execucao economica -> Validacao final</div>
+      <div class="accent-bar"></div>
+    </article>
+
+    <article id="slide-3" class="slide-container">
+      <div class="eyebrow">Lens / Token Economy · 3 de 8</div>
+      <h1>Prompt do modelo premium (planejamento)</h1>
+      <div class="prompt-box">Voce e um arquiteto de solucao orientado a custo-beneficio.
+
+Contexto:
+- Objetivo: [descreva objetivo]
+- Stack: [tecnologias]
+- Restricoes: [tempo, custo, padrao, ambiente]
+- Escopo minimo viavel: [MVP]
+
+Sua tarefa:
+1) Criar plano em etapas objetivas e ordenadas.
+2) Definir entregavel e criterio de aceite por etapa.
+3) Listar riscos, impacto e mitigacao.
+4) Definir comandos de execucao e verificacao.
+5) Gerar artefato final em markdown estruturado.
+
+Formato da resposta:
+- Objetivo
+- Premissas
+- Plano por etapas
+- Riscos e mitigacoes
+- Comandos por etapa
+- Checklist de aceite
+
+Regras:
+- Seja conciso e tecnico.
+- Evite texto sem acao.
+- Priorize custo-beneficio e reuso.
+      </div>
+      <div class="accent-bar"></div>
+    </article>
+
+    <article id="slide-4" class="slide-container">
+      <div class="eyebrow">Lens / Token Economy · 4 de 8</div>
+      <h1>Artefato de handoff (o que vai para o modelo barato)</h1>
+      <div class="prompt-box"># HandOff v1
+
+## Objetivo
+[1 paragrafo]
+
+## Etapas
+1. [nome]
+   - Fazer:
+   - Validar:
+   - Saida esperada:
+
+2. [nome]
+   - Fazer:
+   - Validar:
+   - Saida esperada:
+
+## Nao fazer
+- [limites]
+
+## Qualidade minima
+- testes: [sim/nao]
+- lint: [sim/nao]
+- logs: [sim/nao]
+
+## Definicao de pronto
+- [criterios objetivos]
+      </div>
+      <p>Esse documento evita que o agente barato invente estrategia nova no meio da execucao.</p>
+    </article>
+
+    <article id="slide-5" class="slide-container">
+      <div class="eyebrow">Lens / Token Economy · 5 de 8</div>
+      <h1>Prompt do modelo barato (modo agente)</h1>
+      <div class="prompt-box">Use estritamente o HandOff fornecido.
+
+Objetivo:
+- Executar etapas sem replanejar arquitetura.
+
+Regras de execucao:
+1) Execute uma etapa por vez.
+2) Ao finalizar etapa, valide criterios e reporte status.
+3) Se faltar contexto, pergunte objetivamente em 1 pergunta.
+4) Nao altere escopo sem aprovacao.
+
+Formato de resposta por etapa:
+- Etapa atual:
+- Acoes executadas:
+- Evidencia/resultado:
+- Pendencias:
+- Proxima etapa:
+      </div>
+      <div class="accent-bar"></div>
+    </article>
+
+    <article id="slide-6" class="slide-container">
+      <div class="eyebrow">Lens / Token Economy · 6 de 8</div>
+      <h1>Modelo de custo e exemplo rapido</h1>
+      <div class="formula">Custo total = (tokens_planejamento x preco_premium) + (tokens_execucao x preco_economico)</div>
+      <div class="grid-2">
+        <div class="panel">
+          <h3>Cenario sem estrategia</h3>
+          <ul>
+            <li>Todo trabalho no modelo premium.</li>
+            <li>Muito token em exploracao repetida.</li>
+            <li>Custo alto por iteracao.</li>
+          </ul>
+        </div>
+        <div class="panel">
+          <h3>Cenario com 2 estagios</h3>
+          <ul>
+            <li>Planejamento premium em 1 rodada.</li>
+            <li>Execucao em modelo economico por N tarefas.</li>
+            <li>Maior previsibilidade e menor custo medio.</li>
+          </ul>
+        </div>
+      </div>
+      <p>A economia cresce quando ha repeticao de tarefas parecidas (features, refactors, correcoes).</p>
+    </article>
+
+    <article id="slide-7" class="slide-container">
+      <div class="eyebrow">Lens / Token Economy · 7 de 8</div>
+      <h1>Riscos e controles operacionais</h1>
+      <div class="grid-2">
+        <div class="panel">
+          <h3>Riscos comuns</h3>
+          <ul>
+            <li>Plano generico demais.</li>
+            <li>Agente barato desviando de escopo.</li>
+            <li>Validacao fraca por etapa.</li>
+          </ul>
+        </div>
+        <div class="panel">
+          <h3>Controles</h3>
+          <ul>
+            <li>Checklist de aceite por etapa.</li>
+            <li>Regra de "nao replanejar" na execucao.</li>
+            <li>Gate de qualidade (lint, teste, build).</li>
+          </ul>
+        </div>
+      </div>
+      <div class="accent-bar"></div>
+    </article>
+
+    <article id="slide-8" class="slide-container">
+      <div class="eyebrow">Lens / Token Economy · 8 de 8</div>
+      <h1>Checklist final para rodar todo dia</h1>
+      <div class="checklist">
+        <div>[ ] Objetivo e restricoes claros.</div>
+        <div>[ ] Plano premium com etapas e riscos.</div>
+        <div>[ ] HandOff estruturado e fechado.</div>
+        <div>[ ] Prompt de execucao sem replanejamento.</div>
+        <div>[ ] Validacao tecnica por etapa.</div>
+        <div>[ ] Medicao de custo e tempo por task.</div>
+      </div>
+      <p>
+        Estrategia resumida: pensar caro uma vez, executar barato varias vezes, medir sempre.
+      </p>
+      <div class="accent-bar"></div>
+    </article>
+
+    <div class="footer-row">
+      <div class="counter" id="counter">Slide 1 de 8</div>
+      <div class="controls">
+        <button class="outline" id="prevBtn" type="button">Anterior</button>
+        <button class="primary" id="nextBtn" type="button">Proximo</button>
+      </div>
+    </div>
+  </section>
+</main>
+
+<script>
+  let currentSlide = 1;
+  const slides = document.querySelectorAll('.slide-container');
+  const totalSlides = slides.length;
+
+  function render() {
+    slides.forEach((slide, index) => {
+      slide.classList.toggle('active', index === currentSlide - 1);
+    });
+
+    document.getElementById('prevBtn').disabled = currentSlide === 1;
+    document.getElementById('nextBtn').disabled = currentSlide === totalSlides;
+    document.getElementById('counter').textContent = `Slide ${currentSlide} de ${totalSlides}`;
+  }
+
+  function nextSlide() {
+    if (currentSlide < totalSlides) {
+      currentSlide += 1;
+      render();
+    }
+  }
+
+  function prevSlide() {
+    if (currentSlide > 1) {
+      currentSlide -= 1;
+      render();
+    }
+  }
+
+  document.getElementById('nextBtn').addEventListener('click', nextSlide);
+  document.getElementById('prevBtn').addEventListener('click', prevSlide);
+
+  document.addEventListener('keydown', (event) => {
+    if (event.key === 'ArrowRight') nextSlide();
+    if (event.key === 'ArrowLeft') prevSlide();
+  });
+
+  render();
+</script>
+</body>
+</html>

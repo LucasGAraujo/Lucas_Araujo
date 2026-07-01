@@ -1,0 +1,191 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: Inter, sans-serif;
+  background: #fff;
+}
+
+.header {
+  height: 80px;
+  padding: 0 60px;
+
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  border-bottom: 1px solid #ececec;
+}
+
+.logo {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+}
+
+.logo-home {
+  text-decoration: none;
+  color: inherit;
+}
+
+.logo img {
+  width: 42px;
+  height: 42px;
+  object-fit: contain;
+}
+
+.logo h1 {
+  font-size: 28px;
+  font-weight: 700;
+  color: #222;
+}
+
+.logo span {
+  display: block;
+  margin-top: 2px;
+  font-size: 10px;
+  letter-spacing: 6px;
+  color: #8b8b8b;
+}
+
+nav {
+  display: flex;
+  align-items: center;
+  gap: 42px;
+}
+
+nav a {
+  text-decoration: none;
+  text-transform: uppercase;
+  color: #444;
+  font-size: 12px;
+  letter-spacing: 3px;
+  font-weight: 500;
+  transition: color 0.25s;
+}
+
+nav a:hover {
+  color: #000;
+}
+
+.actions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+/* Botões PT e EN */
+.actions button {
+  height: 38px;
+  min-width: 48px;
+  padding: 0 16px;
+
+  background: transparent;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+
+  cursor: pointer;
+
+  font-size: 12px;
+  letter-spacing: 1px;
+
+  transition: all 0.25s ease;
+}
+
+.actions button:hover {
+  background: #111;
+  color: #fff;
+  border-color: #111;
+}
+
+/* Link do LinkedIn */
+.linkedin {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  height: 38px;
+  padding: 0 20px;
+
+  background: #111;
+  color: #fff;
+  text-decoration: none;
+
+  border-radius: 4px;
+
+  font-size: 12px;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+
+  transition: all 0.25s ease;
+}
+.actions button.active {
+  background: #111;
+  color: #fff;
+  border-color: #111;
+}
+
+.linkedin:hover {
+  background: #333;
+}
+/* ========================================= */
+/* ESTILOS DE LAYOUT (A partir de 1280px)    */
+/* ========================================= */
+@media (max-width: 1280px) {
+  .header {
+    flex-wrap: wrap;       /* Permite que o menu quebre para a linha de baixo */
+    height: auto;          /* Remove a altura fixa de 80px */
+    padding: 0;
+    border-bottom: none;   /* Remove a borda inferior geral... */
+  }
+
+  /* LINHA 1: Logo na esquerda e Botões na direita */
+  .logo {
+    order: 1;
+    flex: 1;
+    padding: 16px 24px;
+  }
+
+  .actions {
+    order: 2;
+    padding: 16px 24px;
+    gap: 0; /* Remove o espaço para juntar os botões de idioma */
+  }
+
+  /* Design agrupado dos botões de Idioma */
+  .actions button {
+    border-radius: 0;
+    height: 38px; /* Mantém a altura original do seu código */
+  }
+
+  /* Arredonda apenas as extremidades do grupo de idiomas */
+  .actions button:first-of-type {
+    border-top-left-radius: 4px;
+    border-bottom-left-radius: 4px;
+  }
+
+  .actions button:last-of-type {
+    border-top-right-radius: 4px;
+    border-bottom-right-radius: 4px;
+    margin-right: 16px; /* Afasta o bloco de idiomas do botão LinkedIn */
+    border-left: none;  /* Evita borda grossa (dupla) entre o PT e EN */
+  }
+
+  /* LINHA 2: Navegação que vai para a parte de baixo */
+  nav {
+    order: 3;
+    width: 100%;
+    padding: 16px 24px;
+    border-top: 1px solid #ececec; /* ...e adiciona a borda aqui, para separar as linhas */
+    
+    /* Regras para scroll horizontal, caso a tela fique muito estreita */
+    justify-content: flex-start;
+    overflow-x: auto;
+    white-space: nowrap;
+    gap: 32px;
+  }
+}

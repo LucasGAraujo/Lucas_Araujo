@@ -1,0 +1,115 @@
+.github-projects {
+  width: 80%;
+  margin: 120px auto;
+  color: #111;
+}
+.projects-grid {
+  margin-top: 0;
+}
+
+.projects-grid h3 {
+  font-size: 36px;
+  margin-bottom: 22px;
+}
+
+.project-card h4 {
+  font-size: 22px;
+  margin-bottom: 10px;
+  color: #111;
+}
+
+.project-card p {
+  color: #4b5563;
+  line-height: 1.6;
+  margin-bottom: 14px;
+}
+
+.project-cards {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 16px;
+}
+
+.project-card {
+  background: #fff;
+  border: 1px solid #ececec;
+  border-radius: 14px;
+  padding: 24px;
+}
+
+.tag-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 16px;
+}
+
+.tag-row span {
+  font-size: 16px;
+  padding: 5px 9px;
+  border-radius: 999px;
+  background: #f4f4f5;
+  color: #444;
+  border: 1px solid #ececec;
+}
+
+.project-card a {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  text-decoration: none;
+  background: #111;
+  color: #fff;
+  border-radius: 8px;
+  height: 38px;
+  padding: 0 14px;
+  font-size: 16px;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+}
+
+.project-card a:hover {
+  background: #2b2b2b;
+}
+
+.project-card a:focus {
+  background: #2b2b2b;
+}
+
+.project-card a:focus-visible {
+  background: #2b2b2b;
+  outline: 2px solid #111;
+  outline-offset: 2px;
+}
+
+@media (max-width: 1280px) {
+  .github-projects {
+    width: 90%;
+  }
+
+  .projects-grid h3 {
+    font-size: 34px;
+  }
+}
+
+@media (max-width: 992px) {
+  .project-cards {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 600px) {
+  .github-projects {
+    width: 92%;
+    margin: 90px auto;
+  }
+
+  .projects-grid h3 {
+    font-size: 30px;
+  }
+
+  .project-card h4 {
+    font-size: 20px;
+  }
+}
+
