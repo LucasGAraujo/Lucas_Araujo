@@ -4,6 +4,7 @@ import Header from "./Header/Header";
 import Hero from "./Hero/Hero";
 import GithubProjectsSection from "./GithubProjectsSection/GithubProjectsSection";
 import LensesSection from "./LensesSection/LensesSection";
+import Footer from "./Footer/Footer";
 import PresentationPage from "./PresentationPage";
 
 export default function App() {
@@ -22,6 +23,7 @@ export default function App() {
               <Hero language={language} />
               <GithubProjectsSection language={language} />
               <LensesSection language={language} /> 
+              <Footer language={language} />
             </>
           } 
         />
